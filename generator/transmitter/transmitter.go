@@ -9,10 +9,12 @@ import (
 
 	"github.com/ic2hrmk/fib/common/contracts"
 	"github.com/ic2hrmk/fib/generator/config"
+	"sync"
 )
 
 type Transmitter struct {
 	conn net.Conn
+	mutex sync.Mutex
 }
 
 func NewTransmitter() (transmitter *Transmitter, err error) {
@@ -41,6 +43,10 @@ func NewTransmitter() (transmitter *Transmitter, err error) {
 }
 
 func (t Transmitter) Send(payload contracts.Payload) (err error) {
+	//	Make transmitter thread-safe
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
+
 	//	Limit write deadline
 	t.conn.SetWriteDeadline(time.Now().Add(1 * time.Second))
 

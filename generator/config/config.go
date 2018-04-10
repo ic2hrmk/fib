@@ -6,7 +6,7 @@ import (
 
 type configuration struct {
 	//	Generator settings
-	generationSpeed int
+	generationSpeed float64
 
 	//	Logger communication settings
 	nodeId        string
@@ -19,13 +19,14 @@ const (
 )
 
 func init() {
+	appConfiguration.generationSpeed = 0
 	appConfiguration.nodeId = common.GenerateRandomString(nodeIdLength)
 	appConfiguration.loggerAddress = defaultLoggerIP
 }
 
 var appConfiguration configuration
 
-func GetGenerationSpeed() int {
+func GetGenerationSpeed() float64 {
 	return appConfiguration.generationSpeed
 }
 
@@ -34,9 +35,9 @@ func GetNodeId() string {
 }
 
 func GetLoggerAddress() string {
-	return appConfiguration.nodeId
+	return appConfiguration.loggerAddress
 }
 
-func SetGenerationSpeed(generationSpeed int) {
+func SetGenerationSpeed(generationSpeed float64) {
 	appConfiguration.generationSpeed = generationSpeed
 }
