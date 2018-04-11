@@ -1,5 +1,5 @@
 //	One way Fibonacci sequence generator
-package model
+package generator
 
 type fibonacciGenerator struct {
 	x uint64

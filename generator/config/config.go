@@ -1,6 +1,9 @@
 package config
 
 import (
+	"flag"
+	"log"
+
 	"github.com/ic2hrmk/fib/common"
 )
 
@@ -9,19 +12,22 @@ type configuration struct {
 	generationSpeed float64
 
 	//	Logger communication settings
-	nodeId        string
+	nodeId        [8]byte
 	loggerAddress string
 }
 
-const (
-	nodeIdLength    = 8
-	defaultLoggerIP = "127.0.0.1:10000"
-)
-
 func init() {
-	appConfiguration.generationSpeed = 0
-	appConfiguration.nodeId = common.GenerateRandomString(nodeIdLength)
-	appConfiguration.loggerAddress = defaultLoggerIP
+	//	TODO: add logger IP address configuration
+	flag.Float64Var(&appConfiguration.generationSpeed, "generation_speed", -1, "speed of Fibonacci number generation (number/s)")
+	flag.Parse()
+
+	//	Validation
+	if appConfiguration.generationSpeed == -1 {
+		log.Fatal("generation speed wasn't configured")
+	}
+
+	copy(appConfiguration.nodeId[:], common.GenerateRandomString(8))
+	appConfiguration.loggerAddress = common.DefaultLoggerIP
 }
 
 var appConfiguration configuration
@@ -30,14 +36,10 @@ func GetGenerationSpeed() float64 {
 	return appConfiguration.generationSpeed
 }
 
-func GetNodeId() string {
+func GetNodeId() [8]byte {
 	return appConfiguration.nodeId
 }
 
 func GetLoggerAddress() string {
 	return appConfiguration.loggerAddress
-}
-
-func SetGenerationSpeed(generationSpeed float64) {
-	appConfiguration.generationSpeed = generationSpeed
 }
